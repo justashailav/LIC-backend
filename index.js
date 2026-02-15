@@ -30,6 +30,10 @@ connectDb()
 app.use("/api/v1",planRoute);
 app.use("/api/v1",aiRoute);
 app.use("/api/v1",loginRoute);
+app.get("/", (req, res) => {
+  res.send("Backend is running 🚀");
+});
+
 app.listen(PORT,()=>{
     console.log(`Server running at port ${PORT}`);
 })
