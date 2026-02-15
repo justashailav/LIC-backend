@@ -24,6 +24,9 @@ const corsOptions = {
 const PORT = process.env.PORT || 4000;
 app.use(cors(corsOptions));
 connectDb()
+app.get("/", (req, res) => {
+  res.send("Backend is running successfully 🚀");
+});
 
 app.use("/api/v1",planRoute);
 app.use("/api/v1",aiRoute);
