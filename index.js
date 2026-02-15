@@ -15,6 +15,7 @@ const corsOptions = {
   origin: [
     "http://localhost:5173",
     "https://tejkavifuture.life",
+    "https://www.tejkavifuture.life"
     
   ],
   credentials: true
