@@ -11,25 +11,22 @@ dotenv.config({});
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(cookieParser());
-app.use(cors({
+const corsOptions = {
   origin: [
     "http://localhost:5173",
     "https://tejkavifuture.life",
-    "https://www.tejkavifuture.life"
+    
   ],
   credentials: true
-}));
-
+};
 
 const PORT = process.env.PORT || 4000;
 app.use(cors(corsOptions));
-
+connectDb()
 
 app.use("/api/v1",planRoute);
 app.use("/api/v1",aiRoute);
 app.use("/api/v1",loginRoute);
-connectDb().then(() => {
-  app.listen(PORT, () => {
+app.listen(PORT,()=>{
     console.log(`Server running at port ${PORT}`);
-  });
-});
+})
