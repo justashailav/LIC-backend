@@ -23,11 +23,13 @@ app.use(cors({
 
 const PORT = process.env.PORT || 4000;
 app.use(cors(corsOptions));
-connectDb()
+
 
 app.use("/api/v1",planRoute);
 app.use("/api/v1",aiRoute);
 app.use("/api/v1",loginRoute);
-app.listen(PORT,()=>{
+connectDb().then(() => {
+  app.listen(PORT, () => {
     console.log(`Server running at port ${PORT}`);
-})
+  });
+});
