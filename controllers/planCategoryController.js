@@ -107,15 +107,41 @@ export const createPlan = async (req, res) => {
 
 export const updatePlan = async (req, res) => {
   try {
-    const updatedPlan = await Plan.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true }
-    );
+    const plan = await Plan.findById(req.params.id);
 
-    if (!updatedPlan) {
+    if (!plan) {
       return res.status(404).json({ message: "Plan not found" });
     }
+
+    let imageUrl = plan.image; // 🔥 keep old image by default
+
+    // ✅ If new image uploaded
+    if (req.file) {
+      const uploadedImage = await uploadMedia(req.file.path);
+      imageUrl = uploadedImage.secure_url;
+    }
+
+    // ✅ Parse arrays safely
+    const benefitsParsed =
+      typeof req.body.benefits === "string"
+        ? JSON.parse(req.body.benefits)
+        : req.body.benefits;
+
+    const whoShouldBuyParsed =
+      typeof req.body.whoShouldBuy === "string"
+        ? JSON.parse(req.body.whoShouldBuy)
+        : req.body.whoShouldBuy;
+
+    const updatedPlan = await Plan.findByIdAndUpdate(
+      req.params.id,
+      {
+        ...req.body,
+        benefits: benefitsParsed,
+        whoShouldBuy: whoShouldBuyParsed,
+        image: imageUrl, // 🔥 update image properly
+      },
+      { new: true }
+    );
 
     res.status(200).json(updatedPlan);
   } catch (error) {
@@ -123,6 +149,7 @@ export const updatePlan = async (req, res) => {
     res.status(500).json({ message: "Failed to update plan" });
   }
 };
+
 export const deletePlan = async (req, res) => {
   try {
     const deletedPlan = await Plan.findByIdAndDelete(req.params.id);

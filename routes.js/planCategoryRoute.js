@@ -7,7 +7,7 @@ router.get("/plan-categories", getAllPlans);
 router.get("/plan-categories/popular", getPopularPlans);
 router.get("/plan-categories/:slug", getPlanBySlug);
 router.post("/admin/plan-categories",upload.single("image"), createPlan);
-router.put("/admin/plan-categories/:id", updatePlan);
+router.put("/admin/plan-categories/:id",upload.single("image"), updatePlan);
 router.delete("/admin/plan-categories/:id", deletePlan);
 
 export default router;
