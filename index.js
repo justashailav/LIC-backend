@@ -14,10 +14,11 @@ app.use(cookieParser());
 const corsOptions = {
   origin: [
     "http://localhost:5173",
-    "https://licfrontend.netlify.app/"
+    "https://licfrontend.netlify.app"
   ],
   credentials: true
 };
+
 
 
 const PORT = process.env.PORT || 4000;
