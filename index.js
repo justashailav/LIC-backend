@@ -14,9 +14,7 @@ app.use(cookieParser());
 const corsOptions = {
   origin: [
     "http://localhost:5173",
-    "https://tejkavifuture.life",
-    "https://www.tejkavifuture.life",
-    "https://darkred-dove-697077.hostingersite.com"
+    "https://licfrontend.netlify.app/"
   ],
   credentials: true
 };
