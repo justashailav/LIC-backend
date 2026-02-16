@@ -1,3 +1,4 @@
+import { uploadMedia } from "../config/cloudinary.js";
 import { Plan } from "../models/planCategory.js";
 export const getAllPlans = async (req, res) => {
   try {
@@ -40,6 +41,9 @@ export const getPopularPlans = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch popular plans" });
   }
 };
+
+ // adjust path if different
+
 export const createPlan = async (req, res) => {
   try {
     const {
@@ -56,9 +60,19 @@ export const createPlan = async (req, res) => {
       popularBg,
     } = req.body;
 
+    const files = req.files || [];
+
     const existingPlan = await Plan.findOne({ slug });
     if (existingPlan) {
       return res.status(400).json({ message: "Plan already exists" });
+    }
+
+    let imageUrl = "";
+
+    
+    if (files.length > 0) {
+      const uploadedImage = await uploadMedia(files[0]);
+      imageUrl = uploadedImage.secure_url; 
     }
 
     const newPlan = await Plan.create({
@@ -73,6 +87,7 @@ export const createPlan = async (req, res) => {
       popularValue,
       popularButtonText,
       popularBg,
+      image: imageUrl, 
     });
 
     res.status(201).json(newPlan);
@@ -81,6 +96,7 @@ export const createPlan = async (req, res) => {
     res.status(500).json({ message: "Failed to create plan" });
   }
 };
+
 export const updatePlan = async (req, res) => {
   try {
     const updatedPlan = await Plan.findByIdAndUpdate(
