@@ -70,7 +70,7 @@ export const createPlan = async (req, res) => {
     }
 
     // 🔥 Upload to Cloudinary
-    const uploadedImage = await uploadMedia(req.file);
+    const uploadedImage = await uploadMedia(req.file.path);
     const imageUrl = uploadedImage.secure_url;
 
     // ✅ Parse arrays safely
