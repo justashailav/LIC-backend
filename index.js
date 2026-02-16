@@ -14,10 +14,13 @@ app.use(cookieParser());
 const corsOptions = {
   origin: [
     "http://localhost:5173",
-    "https://licfrontend.netlify.app"
+    "https://licfrontend.netlify.app",
+    "https://tejkavifuture.life",
+    "https://www.tejkavifuture.life"
   ],
   credentials: true
 };
+
 
 
 
