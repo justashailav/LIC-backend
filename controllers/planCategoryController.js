@@ -42,7 +42,6 @@ export const getPopularPlans = async (req, res) => {
   }
 };
 
- // adjust path if different
 
 export const createPlan = async (req, res) => {
   try {
@@ -60,42 +59,51 @@ export const createPlan = async (req, res) => {
       popularBg,
     } = req.body;
 
-    const files = req.files || [];
-
     const existingPlan = await Plan.findOne({ slug });
     if (existingPlan) {
       return res.status(400).json({ message: "Plan already exists" });
     }
 
-    let imageUrl = "";
-
-    
-    if (files.length > 0) {
-      const uploadedImage = await uploadMedia(files[0]);
-      imageUrl = uploadedImage.secure_url; 
+    // ✅ Require Image
+    if (!req.file) {
+      return res.status(400).json({ message: "Image is required" });
     }
+
+    // 🔥 Upload to Cloudinary
+    const uploadedImage = await uploadMedia(req.file);
+    const imageUrl = uploadedImage.secure_url;
+
+    // ✅ Parse arrays safely
+    const benefitsParsed =
+      typeof benefits === "string" ? JSON.parse(benefits) : benefits;
+
+    const whoShouldBuyParsed =
+      typeof whoShouldBuy === "string"
+        ? JSON.parse(whoShouldBuy)
+        : whoShouldBuy;
 
     const newPlan = await Plan.create({
       title,
       slug,
       description,
-      benefits,
-      whoShouldBuy,
+      benefits: benefitsParsed,
+      whoShouldBuy: whoShouldBuyParsed,
       order,
       isPopular,
       popularLabel,
       popularValue,
       popularButtonText,
       popularBg,
-      image: imageUrl, 
+      image: imageUrl,
     });
 
     res.status(201).json(newPlan);
   } catch (error) {
     console.error("Create plan error:", error);
-    res.status(500).json({ message: "Failed to create plan" });
+    res.status(500).json({ message: error.message });
   }
 };
+
 
 export const updatePlan = async (req, res) => {
   try {

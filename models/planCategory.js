@@ -17,8 +17,8 @@ const planCategorySchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-     image: {
-      type: String, // store image URL
+    image: {
+      type: String, 
       required: true,
     },
     benefits: {
