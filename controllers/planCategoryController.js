@@ -49,6 +49,7 @@ export const createPlan = async (req, res) => {
       title,
       slug,
       description,
+      category, // ✅ ADD THIS
       benefits,
       whoShouldBuy,
       order,
@@ -58,6 +59,11 @@ export const createPlan = async (req, res) => {
       popularButtonText,
       popularBg,
     } = req.body;
+
+    // ✅ Check required category
+    if (!category) {
+      return res.status(400).json({ message: "Category is required" });
+    }
 
     const existingPlan = await Plan.findOne({ slug });
     if (existingPlan) {
@@ -86,6 +92,7 @@ export const createPlan = async (req, res) => {
       title,
       slug,
       description,
+      category, // ✅ SAVE CATEGORY
       benefits: benefitsParsed,
       whoShouldBuy: whoShouldBuyParsed,
       order,

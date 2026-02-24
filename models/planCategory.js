@@ -18,7 +18,7 @@ const planCategorySchema = new mongoose.Schema(
       required: true,
     },
     image: {
-      type: String, 
+      type: String,
       required: true,
     },
     benefits: {
@@ -29,6 +29,11 @@ const planCategorySchema = new mongoose.Schema(
     whoShouldBuy: {
       type: [String],
       default: [],
+    },
+    category: {
+      type: String,
+      required: true,
+      enum: ["Children", "Adult", "Senior Citizen", "Family"],
     },
 
     // 🔥 Popular plan support
@@ -65,7 +70,7 @@ const planCategorySchema = new mongoose.Schema(
       default: 0,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export const Plan = mongoose.model("Plan", planCategorySchema);
