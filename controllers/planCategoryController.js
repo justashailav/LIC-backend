@@ -120,7 +120,7 @@ export const updatePlan = async (req, res) => {
       return res.status(404).json({ message: "Plan not found" });
     }
 
-    let imageUrl = plan.image; // 🔥 keep old image by default
+    let imageUrl = plan.image;
 
     // ✅ If new image uploaded
     if (req.file) {
@@ -139,13 +139,39 @@ export const updatePlan = async (req, res) => {
         ? JSON.parse(req.body.whoShouldBuy)
         : req.body.whoShouldBuy;
 
+    // ✅ Handle category safely
+    const allowedCategories = [
+      "Children",
+      "Adult",
+      "Senior Citizen",
+      "Family",
+    ];
+
+    let categoryValue = plan.category; // keep old by default
+
+    if (req.body.category) {
+      if (!allowedCategories.includes(req.body.category)) {
+        return res.status(400).json({ message: "Invalid category" });
+      }
+      categoryValue = req.body.category;
+    }
+
     const updatedPlan = await Plan.findByIdAndUpdate(
       req.params.id,
       {
-        ...req.body,
+        title: req.body.title,
+        slug: req.body.slug,
+        description: req.body.description,
+        category: categoryValue, // ✅ updated properly
         benefits: benefitsParsed,
         whoShouldBuy: whoShouldBuyParsed,
-        image: imageUrl, // 🔥 update image properly
+        order: req.body.order,
+        isPopular: req.body.isPopular,
+        popularLabel: req.body.popularLabel,
+        popularValue: req.body.popularValue,
+        popularButtonText: req.body.popularButtonText,
+        popularBg: req.body.popularBg,
+        image: imageUrl,
       },
       { new: true }
     );
@@ -156,7 +182,6 @@ export const updatePlan = async (req, res) => {
     res.status(500).json({ message: "Failed to update plan" });
   }
 };
-
 export const deletePlan = async (req, res) => {
   try {
     const deletedPlan = await Plan.findByIdAndDelete(req.params.id);
