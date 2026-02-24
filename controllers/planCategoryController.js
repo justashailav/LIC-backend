@@ -128,7 +128,7 @@ export const updatePlan = async (req, res) => {
       imageUrl = uploadedImage.secure_url;
     }
 
-    // ✅ Parse arrays safely
+    // ✅ Parse benefits safely
     const benefitsParsed =
       typeof req.body.benefits === "string"
         ? JSON.parse(req.body.benefits)
@@ -139,21 +139,29 @@ export const updatePlan = async (req, res) => {
         ? JSON.parse(req.body.whoShouldBuy)
         : req.body.whoShouldBuy;
 
-    // ✅ Handle category safely
+    // ✅ Safe category handling (VERY IMPORTANT)
     const allowedCategories = [
-      "Children",
-      "Adult",
-      "Senior Citizen",
-      "Family",
+      "Endowment Plan",
+      "Money Back Plan",
+      "Children Plan",
+      "Single Premium Plan",
+      "Term Insurance Plan",
+      "Health Plan",
+      "Pension Plan",
     ];
 
     let categoryValue = plan.category; // keep old by default
 
     if (req.body.category) {
-      if (!allowedCategories.includes(req.body.category)) {
-        return res.status(400).json({ message: "Invalid category" });
+      const trimmedCategory = req.body.category.trim();
+
+      if (!allowedCategories.includes(trimmedCategory)) {
+        return res.status(400).json({
+          message: `Invalid category: ${trimmedCategory}`,
+        });
       }
-      categoryValue = req.body.category;
+
+      categoryValue = trimmedCategory;
     }
 
     const updatedPlan = await Plan.findByIdAndUpdate(
@@ -162,7 +170,7 @@ export const updatePlan = async (req, res) => {
         title: req.body.title,
         slug: req.body.slug,
         description: req.body.description,
-        category: categoryValue, // ✅ updated properly
+        category: categoryValue,
         benefits: benefitsParsed,
         whoShouldBuy: whoShouldBuyParsed,
         order: req.body.order,
@@ -173,13 +181,16 @@ export const updatePlan = async (req, res) => {
         popularBg: req.body.popularBg,
         image: imageUrl,
       },
-      { new: true }
+      {
+        new: true,
+        runValidators: true, // keep this ON
+      }
     );
 
     res.status(200).json(updatedPlan);
   } catch (error) {
     console.error("Update plan error:", error);
-    res.status(500).json({ message: "Failed to update plan" });
+    res.status(500).json({ message: error.message });
   }
 };
 export const deletePlan = async (req, res) => {

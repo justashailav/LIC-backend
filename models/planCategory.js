@@ -31,10 +31,18 @@ const planCategorySchema = new mongoose.Schema(
       default: [],
     },
     category: {
-      type: String,
-      required: true,
-      enum: ["Children", "Adult", "Senior Citizen", "Family"],
-    },
+  type: String,
+  required: true,
+  enum: [
+    "Endowment Plan",
+    "Money Back Plan",
+    "Children Plan",
+    "Single Premium Plan",
+    "Term Insurance Plan",
+    "Health Plan",
+    "Pension Plan",
+  ],
+},
 
     // 🔥 Popular plan support
     isPopular: {
